@@ -63,13 +63,13 @@ def _moon_bar(label: str, value: int, ascii_only: bool) -> Text:
 def _sprite_panel(pet: Pet, frame: int, ascii_only: bool) -> Panel:
     mood = classify_mood(pet)
     sprite = sprites.pick(pet.stage, pet.adult_form, mood, frame, ascii_only=ascii_only)
-    poop_glyph = sprites.POOP_GLYPH_ASCII if ascii_only else sprites.POOP_GLYPH
-    suffix = ""
     if pet.poops > 0 and not pet.is_dead():
-        suffix = "  " + " ".join([poop_glyph] * pet.poops)
-    text = Text(sprite + suffix, style=sprites.mood_color(mood))
+        poop_glyph = sprites.POOP_GLYPH_ASCII if ascii_only else sprites.POOP_GLYPH
+        sprite = sprite.copy()
+        sprite.append("  ")
+        sprite.append(" ".join([poop_glyph] * pet.poops), style="dark_orange3")
     title = pet.name if not pet.is_dead() else f"{pet.name} (R.I.P.)"
-    return Panel(Align.center(text, vertical="middle"), title=title, border_style="cyan")
+    return Panel(Align.center(sprite, vertical="middle"), title=title, border_style="cyan")
 
 
 def _stats_panel(pet: Pet, ascii_only: bool) -> Panel:
